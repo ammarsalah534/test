@@ -1,41 +1,68 @@
+import os
+
 import numpy as np
 import pandas as pd
 from collections import defaultdict
 
-from classes.utils import related_output_file, antique_output_file
+from classes.utils import related_output_file, antique_output_file, ground_truth_file
 
 
 class Evaluation:
-    def __init__(self, related_output_file, ground_truth_file):
+    def __init__(self, related_output_file, ground_truth_file=None):
         """
         Initializes the Evaluation class.
 
         Args:
             related_output_file (str): Path to the related output TSV file.
-            ground_truth_file (str): Path to the ground truth TSV file.
+            ground_truth_file (str, optional): Path to the ground truth TSV file.
         """
-        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['doc_id', 'text'])
-        self.ground_truth = pd.read_csv(ground_truth_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+
+        if ground_truth_file and os.path.isfile(ground_truth_file):
+            self.ground_truth = pd.read_csv(ground_truth_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        else:
+            self.create_ground_truth_file()
+            self.ground_truth = pd.read_csv('ground_truth.tsv', sep='\t', header=None, names=['query_id', 'doc_id'])
+
+    def create_ground_truth_file(self):
+        """Creates a ground truth file based on the related output."""
+        related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        ground_truth_data = []
+
+        for query_id in related_output['query_id'].unique():
+            query_docs = related_output[related_output['query_id'] == query_id]['doc_id'].tolist()
+            print(f"\nQuery ID: {query_id}")
+            for doc_id in query_docs:
+                print(f"Document ID: {doc_id}")
+                relevance = input("Is this document relevant (y/n)? ").lower()
+                if relevance == 'y':
+                    ground_truth_data.append([query_id, doc_id])
+
+        ground_truth_df = pd.DataFrame(ground_truth_data, columns=['query_id', 'doc_id'])
+        ground_truth_df.to_csv(ground_truth_file, sep='\t', index=False, header=False)
+        print(f"Ground truth file created: {ground_truth_file}")
 
     def calculate_map(self):
         """Calculates the Mean Average Precision (MAP)."""
         query_results = defaultdict(list)
         for _, row in self.related_output.iterrows():
-            query_results[row['doc_id']].append(row['text'])
+            query_results[row['query_id']].append(row['doc_id'])
 
         map_scores = []
         for query_id in self.ground_truth['query_id'].unique():
             relevant_docs = self.ground_truth[self.ground_truth['query_id'] == query_id]['doc_id'].tolist()
-            precisions = []
-            num_relevant = 0
-            for i, doc_id in enumerate(query_results[query_id]):
-                if doc_id in relevant_docs:
-                    num_relevant += 1
-                    precisions.append(num_relevant / (i + 1))
-            if precisions:
-                map_scores.append(sum(precisions) / len(relevant_docs))
+            if query_id in query_results:
+                docs = query_results[query_id]
+                precisions = []
+                num_relevant = 0
+                for i, doc_id in enumerate(docs):
+                    if doc_id in relevant_docs:
+                        num_relevant += 1
+                        precisions.append(num_relevant / (i + 1))
+                if precisions:
+                    map_scores.append(sum(precisions) / len(relevant_docs))
 
-        return np.mean(map_scores)
+        return np.mean(map_scores) if map_scores else np.nan
 
     def calculate_recall(self):
         """Calculates the Recall."""
@@ -54,7 +81,7 @@ class Evaluation:
         mrr_scores = []
         for query_id in self.ground_truth['query_id'].unique():
             relevant_docs = self.ground_truth[self.ground_truth['query_id'] == query_id]['doc_id'].tolist()
-            for i, doc_id in enumerate(self.related_output['doc_id'].tolist()):
+            for i, doc_id in enumerate(self.related_output[self.related_output['query_id'] == query_id]['doc_id']):
                 if doc_id in relevant_docs:
                     mrr_scores.append(1 / (i + 1))
                     break
@@ -64,7 +91,7 @@ class Evaluation:
         """Sorts the results based on evaluation metrics."""
         # You can choose which metric to sort by here
         # Example: Sorting by MAP
-        sorted_results = self.related_output.sort_values(by=['doc_id'], ascending=False)
+        sorted_results = self.related_output.sort_values(by=['query_id', 'doc_id'])
         return sorted_results
 
     def evaluate(self):
@@ -85,5 +112,5 @@ class Evaluation:
 
 
 # Example usage:
-evaluation = Evaluation(related_output_file, antique_output_file)
+evaluation = Evaluation(related_output_file, ground_truth_file)
 evaluation.evaluate()

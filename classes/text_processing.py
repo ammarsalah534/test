@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import os
 
-from classes.utils import print_progress_bar, antique_input_file, antique_output_file
+from utils import print_progress_bar, antique_input_file, antique_output_file
 
 
 # import nltk
@@ -238,5 +238,5 @@ class TextProcessing:
                     df.to_csv(outputFile, sep='\\', index=False, mode='a', header=False)
 
 
-processor = TextProcessing()
-processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')
+# processor = TextProcessing()
+# processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')

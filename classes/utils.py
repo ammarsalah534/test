@@ -19,6 +19,8 @@ query_tfidf_file = os.path.join(output_path, 'query', 'tfidf.pkl')
 
 related_output_file = os.path.join(output_path, 'related', 'output.tsv')
 
+ground_truth_file = os.path.join(output_path, 'related', 'ground_truth.tsv')
+
 
 def print_progress_bar(iteration, total, prefix='', suffix=''):
     """

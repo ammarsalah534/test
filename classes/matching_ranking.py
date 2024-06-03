@@ -50,17 +50,24 @@ class MatchingRanking:
         related_doc_id = cosine_similarities.argsort()[:-11:-1]
 
         # Extract the related documents from the corpus
-        related_documents = [self.doc_corpus[i].replace(" ", "\t", 1) for i in related_doc_id]
+        # related_documents = [self.doc_corpus[i].replace(" ", "\t", 1) for i in related_doc_id]
+        related_documents = [self.doc_corpus[i] for i in related_doc_id]
 
         return related_doc_id, related_documents
 
     # Save the results to a file
-    def save_results(self, related_doc_id, related_documents):
+    def save_results(self, query_id, related_doc_id):
         # Open the file in append mode
+
+        with open(related_output_file, 'a') as f:
+            for doc_id in related_doc_id:
+                f.write(f"{query_id}\t{doc_id}\n")
+
+        '''
         with open(related_output_file, 'a') as f:
             for index, document in zip(related_doc_id, related_documents):
                 # f.write(str(index) + '\n')
                 f.write(document)
                 # f.write("-----------\n")
-
+        '''
         print(f"Related document indices saved to {related_output_file}.")
