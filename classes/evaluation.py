@@ -21,22 +21,23 @@ class Evaluation:
         if ground_truth_file and os.path.isfile(ground_truth_file):
             self.ground_truth = pd.read_csv(ground_truth_file, sep='\t', header=None, names=['query_id', 'doc_id'])
         else:
-            self.create_ground_truth_file()
+            self.create_ground_truth_file('antique')
             self.ground_truth = pd.read_csv('ground_truth.tsv', sep='\t', header=None, names=['query_id', 'doc_id'])
 
-    def create_ground_truth_file(self):
+    def create_ground_truth_file(self, dataset_name):
         """Creates a ground truth file based on the related output."""
-        related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
-        ground_truth_data = []
+        if dataset_name == 'antique':
+            related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        elif dataset_name == 'wikir':
+            related_output = pd.read_csv(wikir_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        else:
+            raise ValueError("Invalid dataset name. Please use 'antique' or 'wikir'.")
 
+        ground_truth_data = []
         for query_id in related_output['query_id'].unique():
             query_docs = related_output[related_output['query_id'] == query_id]['doc_id'].tolist()
-            print(f"\nQuery ID: {query_id}")
             for doc_id in query_docs:
-                print(f"Document ID: {doc_id}")
-                relevance = input("Is this document relevant (y/n)? ").lower()
-                if relevance == 'y':
-                    ground_truth_data.append([query_id, doc_id])
+                ground_truth_data.append([query_id, doc_id])
 
         ground_truth_df = pd.DataFrame(ground_truth_data, columns=['query_id', 'doc_id'])
         ground_truth_df.to_csv(ground_truth_file, sep='\t', index=False, header=False)
