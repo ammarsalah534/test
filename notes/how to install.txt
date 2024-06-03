@@ -1,0 +1,8 @@
+1- Create env:
+python -m venv .venv
+2. Activate the env:
+. .\.venv\Scripts\activate
+(in case of UnaurhorizedAccess): Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+3. Install project packages
+pip install -r requirements.txt
+4-
