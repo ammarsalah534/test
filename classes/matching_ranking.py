@@ -56,12 +56,12 @@ class MatchingRanking:
         return related_doc_id, related_documents
 
     # Save the results to a file
-    def save_results(self, query_id, related_doc_id):
+    def save_results(self, query_id, related_doc_id, related_documents):
         # Open the file in append mode
-
+        '''
         with open(related_output_file, 'a') as f:
             for doc_id in related_doc_id:
-                f.write(f"{query_id}\t{doc_id}\n")
+                f.write(f"{query_id}\t{doc_id}\t{related_documents}\n")
 
         '''
         with open(related_output_file, 'a') as f:
@@ -69,5 +69,5 @@ class MatchingRanking:
                 # f.write(str(index) + '\n')
                 f.write(document)
                 # f.write("-----------\n")
-        '''
+
         print(f"Related document indices saved to {related_output_file}.")

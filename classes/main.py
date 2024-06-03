@@ -42,10 +42,9 @@ def greet(datasetName: str, query: str):
     related_doc_id, related_documents = matcher.match(query_vector, doc_vectors)
 
     # Save the results to a file
-    query_id = random.randint(1, 100000)  # Use a unique query_id or handle it appropriately
-    matcher.save_results(query_id, related_doc_id)
-
-    # matcher.save_results(related_doc_id, related_documents)
+    # query_id = random.randint(1, 10000)  # Use a unique query_id or handle it appropriately
+    # matcher.save_results(query_id, related_doc_id)
+    matcher.save_results(related_doc_id, related_documents)
 
     response = {
         "related_documents": related_documents  # Return the related documents
@@ -54,4 +53,4 @@ def greet(datasetName: str, query: str):
     return response
 
 
-greet('antique', 'fffff wwwww ssss fffff?')
+greet('antique', 'Why do we need to tell customer service operator about our sickness in order to make appointment w/ a about doctor?')
