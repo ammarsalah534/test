@@ -32,7 +32,7 @@ def greet(datasetName: str, query: str):
         # Create a Matching_Ranking object
     matcher = MatchingRanking(doc_file)
     preprocessed_query = matcher.preprocess_query(query)
-    query_vector = matcher.data_rep.vectorizer.transform([preprocessed_query])
+    query_vector = matcher.data_rep.vectorizer.transform([preprocessed_query.split("\t", 1)[1]])
 
     # Convert the query vector to a sparse matrix
     query_vector = csr_matrix(query_vector)
@@ -40,11 +40,9 @@ def greet(datasetName: str, query: str):
     doc_vectors = matcher.data_rep.vsm
     # Call the matching function {{ Cos }}
     related_doc_id, related_documents = matcher.match(query_vector, doc_vectors)
-
+    query_id = preprocessed_query.split("\t", 1)[0]
     # Save the results to a file
-    # query_id = random.randint(1, 10000)  # Use a unique query_id or handle it appropriately
-    # matcher.save_results(query_id, related_doc_id)
-    matcher.save_results(related_doc_id, related_documents)
+    matcher.save_results(query_id, related_doc_id, related_documents)
 
     response = {
         "related_documents": related_documents  # Return the related documents

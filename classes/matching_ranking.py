@@ -1,3 +1,5 @@
+import random
+
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -21,12 +23,15 @@ class MatchingRanking:
         # Save the fitted vectorizer for future use
         joblib.dump(self.data_rep.vectorizer, antique_tfidf_file)
 
+    def generate_query_id(self):
+        return str(random.randint(1111111, 9999999))
+
     # Function to preprocess the query
     def preprocess_query(self, query):
         # Tokenize and preprocess the query here (e.g., lowercasing, removing stop words, etc.)
         tokens = word_tokenize(query.lower())
         # Implement any additional preprocessing if required
-        return ' '.join(tokens)
+        return self.generate_query_id() + '\t' + ' '.join(tokens)
 
     # Function to compute the cosine similarity and retrieve top document indices
     def match(self, query_vector, doc_vectors):
@@ -58,10 +63,11 @@ class MatchingRanking:
     # Save the results to a file
     def save_results(self, query_id, related_doc_id, related_documents):
         # Open the file in append mode
-        '''
         with open(related_output_file, 'a') as f:
-            for doc_id in related_doc_id:
-                f.write(f"{query_id}\t{doc_id}\t{related_documents}\n")
+            for index, document in zip(related_doc_id, related_documents):
+                # f.write(str(index) + '\n')
+                f.write(f"{query_id}\t{index}\t{document}\n")
+                # f.write("-----------\n")
 
         '''
         with open(related_output_file, 'a') as f:
@@ -69,5 +75,5 @@ class MatchingRanking:
                 # f.write(str(index) + '\n')
                 f.write(document)
                 # f.write("-----------\n")
-
+        '''
         print(f"Related document indices saved to {related_output_file}.")
