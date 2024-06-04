@@ -10,7 +10,7 @@ antique_input_file = os.path.join(resource_path, 'antique', 'antique-collection.
 antique_output_file = os.path.join(output_path, 'antique', 'output_collection.tsv')
 antique_tfidf_file = os.path.join(output_path, 'antique', 'tfidf_results.pkl')
 
-wikir_input_file = os.path.join(resource_path, 'wikir', 'antique-collection.txt')
+wikir_input_file = os.path.join(resource_path, 'wikir', 'wikir-collection.txt')
 wikir_output_file = os.path.join(output_path, 'wikir', 'output_collection.tsv')
 wikir_tfidf_file = os.path.join(output_path, 'wikir', 'tfidf_results.pkl')
 

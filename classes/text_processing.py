@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 import os
 
-from utils import print_progress_bar, antique_input_file, antique_output_file
+from utils import print_progress_bar, antique_input_file, antique_output_file, wikir_input_file
 
 
 # import nltk
@@ -200,6 +200,8 @@ class TextProcessing:
         return model.wv[word]
 
     def process_text(self, text, processing_method='lemmatize'):
+        document_id = text.split('\t')[0]
+        text = text.split('\t')[1]
         text = self.normalize_text(text)
         text = self.remove_punctuation(text)
 
@@ -209,7 +211,7 @@ class TextProcessing:
         processed_tokens = self.stem_or_lemmatize(tokens, method=processing_method)
         if len(processed_tokens) == 1:
             return None
-        results = " ".join(processed_tokens).replace(' ', '\t', 1)
+        results = document_id + "\t" + " ".join(processed_tokens)
         # Create a DataFrame for output
         df = pd.DataFrame({'tokens': [results]})
         return df
@@ -225,6 +227,7 @@ class TextProcessing:
             i = 0
             lines = f.readlines()
             total_lines = len(lines)
+            convert_to_tab = inputFile == wikir_input_file
             for line in lines:
                 i += 1
                 print_progress_bar(i, total_lines, prefix='Processing', suffix='Complete')
@@ -232,11 +235,13 @@ class TextProcessing:
                 # parts = line.strip().split(' ')
                 # if len(parts) == 2:  # Ensure there are two parts (ID and text)
                 #     document_id, text = parts
+                if convert_to_tab:
+                    line = line.replace(",", "\t", 1)
                 df = self.process_text(line, processing_method=processing_method)
                 # Save to TSV file (append mode)
                 if df is not None:
                     df.to_csv(outputFile, sep='\\', index=False, mode='a', header=False)
 
 
-# processor = TextProcessing()
-# processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')
+processor = TextProcessing()
+processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')
