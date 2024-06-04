@@ -16,7 +16,7 @@ class Evaluation:
             related_output_file (str): Path to the related output TSV file.
             ground_truth_file (str, optional): Path to the ground truth TSV file.
         """
-        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
 
         if ground_truth_file and os.path.isfile(ground_truth_file):
             self.ground_truth = pd.read_csv(ground_truth_file, sep='\t', header=None, names=['query_id', 'doc_id'])
@@ -54,18 +54,16 @@ class Evaluation:
         map_scores = []
         for query_id in self.ground_truth['query_id'].unique():
             relevant_docs = self.ground_truth[self.ground_truth['query_id'] == query_id]['doc_id'].tolist()
-            if query_id in query_results:
-                docs = query_results[query_id]
-                precisions = []
-                num_relevant = 0
-                for i, doc_id in enumerate(docs):
-                    if doc_id in relevant_docs:
-                        num_relevant += 1
-                        precisions.append(num_relevant / (i + 1))
-                if precisions:
-                    map_scores.append(sum(precisions) / len(relevant_docs))
+            precisions = []
+            num_relevant = 0
+            for i, doc_id in enumerate(query_results[query_id]):
+                if doc_id in relevant_docs:
+                    num_relevant += 1
+                    precisions.append(num_relevant / (i + 1))
+            if precisions:
+                map_scores.append(sum(precisions) / len(relevant_docs))
 
-        return np.mean(map_scores) if map_scores else np.nan
+        return np.mean(map_scores)
 
     def calculate_recall(self):
         """Calculates the Recall."""
