@@ -4,7 +4,7 @@ import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from classes.utils import antique_tfidf_file, related_output_file
+from classes.utils import antique_tfidf_file, antique_related_file
 from representation_data import DataRepresentation
 from scipy.sparse import csr_matrix
 from nltk.tokenize import word_tokenize
@@ -63,17 +63,17 @@ class MatchingRanking:
     # Save the results to a file
     def save_results(self, query_id, related_doc_id, related_documents):
         # Open the file in append mode
-        with open(related_output_file, 'a') as f:
+        with open(antique_related_file, 'a') as f:
             for index, document in zip(related_doc_id, related_documents):
                 # f.write(str(index) + '\n')
                 f.write(f"{query_id}\t{index}\t{document}\n")
                 # f.write("-----------\n")
 
         '''
-        with open(related_output_file, 'a') as f:
+        with open(antique_related_file, 'a') as f:
             for index, document in zip(related_doc_id, related_documents):
                 # f.write(str(index) + '\n')
                 f.write(document)
                 # f.write("-----------\n")
         '''
-        print(f"Related document indices saved to {related_output_file}.")
+        print(f"Related document indices saved to {antique_related_file}.")

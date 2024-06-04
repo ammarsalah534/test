@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 
-from classes.utils import related_output_file, antique_output_file, ground_truth_file
+from classes.utils import antique_related_file, wikir_related_file, antique_ground_truth_file, wikir_ground_truth_file
 
 
 class Evaluation:
@@ -27,9 +27,11 @@ class Evaluation:
     def create_ground_truth_file(self, dataset_name):
         """Creates a ground truth file based on the related output."""
         if dataset_name == 'antique':
-            related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+            ground_truth_file = antique_ground_truth_file
+            related_output = pd.read_csv(antique_related_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
         elif dataset_name == 'wikir':
-            related_output = pd.read_csv(wikir_output_file, sep='\t', header=None, names=['query_id', 'doc_id'])
+            ground_truth_file = wikir_ground_truth_file
+            related_output = pd.read_csv(wikir_related_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
         else:
             raise ValueError("Invalid dataset name. Please use 'antique' or 'wikir'.")
 
@@ -113,5 +115,5 @@ class Evaluation:
 
 
 # Example usage:
-evaluation = Evaluation(related_output_file, ground_truth_file)
+evaluation = Evaluation(antique_related_file, antique_ground_truth_file)
 evaluation.evaluate()

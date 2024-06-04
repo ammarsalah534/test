@@ -9,17 +9,18 @@ output_path = os.path.join(current_dir, "..", "outputs")
 antique_input_file = os.path.join(resource_path, 'antique', 'antique-collection.txt')
 antique_output_file = os.path.join(output_path, 'antique', 'output_collection.tsv')
 antique_tfidf_file = os.path.join(output_path, 'antique', 'tfidf_results.pkl')
+antique_related_file = os.path.join(output_path, 'antique', 'related.tsv')
+antique_ground_truth_file = os.path.join(output_path, 'antique', 'ground_truth.tsv')
 
 wikir_input_file = os.path.join(resource_path, 'wikir', 'wikir-collection.txt')
 wikir_output_file = os.path.join(output_path, 'wikir', 'output_collection.tsv')
 wikir_tfidf_file = os.path.join(output_path, 'wikir', 'tfidf_results.pkl')
+wikir_related_file = os.path.join(output_path, 'wikir', 'related.tsv')
+wikir_ground_truth_file = os.path.join(output_path, 'wikir', 'ground_truth.tsv')
 
 query_output_file = os.path.join(output_path, 'query', 'output.tsv')
 query_tfidf_file = os.path.join(output_path, 'query', 'tfidf.pkl')
 
-related_output_file = os.path.join(output_path, 'related', 'output.tsv')
-
-ground_truth_file = os.path.join(output_path, 'related', 'ground_truth.tsv')
 
 
 def print_progress_bar(iteration, total, prefix='', suffix=''):
