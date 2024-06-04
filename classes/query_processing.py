@@ -24,6 +24,9 @@ class QueryProcessing:
         user_query = query_id + "\t" + user_query
         processor = TextProcessing()
         df = processor.process_text(user_query)
+        if df is None:
+            return None
+
         df['tokens'].to_csv(query_output_file, sep='\\', index=False, header=False)
 
         # Create DataRepresentation object for the processed query

@@ -65,6 +65,25 @@ class Evaluation:
 
         return np.mean(map_scores)
 
+    def calculate_map2(self):
+        """Calculates the Mean Average Precision (MAP@1) for a given query."""
+        total_ap = 0
+        num_queries = len(self.related_output['query_id'].unique())
+
+        for i, row in self.related_output.iterrows():
+            relevant_documents = self.ground_truth[self.ground_truth['doc_id'] == row['doc_id']]
+            if not relevant_documents.empty:
+                precision_at_rank = 1 / (i + 1)
+                total_ap += precision_at_rank
+
+        if num_queries > 0:
+            map1 = total_ap / num_queries
+        else:
+            map1 = 0
+
+        print(f"MAP@1: {map1:.4f}")
+        return map1
+
     def calculate_map(self):
         """Calculates the Mean Average Precision (MAP)."""
         query_results = defaultdict(list)
@@ -118,7 +137,7 @@ class Evaluation:
 
     def evaluate(self):
         """Evaluates the search results and prints the metrics."""
-        map_score = self.calculate_map1()
+        map_score = self.calculate_map2()
         recall_score = self.calculate_recall()
         precision_at_10 = self.calculate_precision_at_k(k=10)
         mrr_score = self.calculate_mrr()
