@@ -16,7 +16,8 @@ class Evaluation:
             related_output_file (str): Path to the related output TSV file.
             ground_truth_file (str, optional): Path to the ground truth TSV file.
         """
-        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
+        self.related_output = pd.read_csv(related_output_file, sep='\t', header=None,
+                                          names=['query_id', 'index', 'doc_id', 'doc_text'])
 
         if ground_truth_file and os.path.isfile(ground_truth_file):
             self.ground_truth = pd.read_csv(ground_truth_file, sep='\t', header=None, names=['query_id', 'doc_id'])
@@ -28,10 +29,12 @@ class Evaluation:
         """Creates a ground truth file based on the related output."""
         if dataset_name == 'antique':
             ground_truth_file = antique_ground_truth_file
-            related_output = pd.read_csv(antique_related_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
+            related_output = pd.read_csv(antique_related_file, sep='\t', header=None,
+                                         names=['query_id', 'index', 'doc_id', 'doc_text'])
         elif dataset_name == 'wikir':
             ground_truth_file = wikir_ground_truth_file
-            related_output = pd.read_csv(wikir_related_file, sep='\t', header=None, names=['query_id', 'index', 'doc_id', 'doc_text'])
+            related_output = pd.read_csv(wikir_related_file, sep='\t', header=None,
+                                         names=['query_id', 'index', 'doc_id', 'doc_text'])
         else:
             raise ValueError("Invalid dataset name. Please use 'antique' or 'wikir'.")
 
@@ -105,6 +108,7 @@ class Evaluation:
                     map_scores.append(ap)
 
         return np.mean(map_scores) if map_scores else np.nan
+
     def calculate_recall(self):
         """Calculates the Recall."""
         all_relevant_docs = set(self.ground_truth['doc_id'].tolist())
@@ -137,21 +141,16 @@ class Evaluation:
 
     def evaluate(self):
         """Evaluates the search results and prints the metrics."""
-        map_score = self.calculate_map2()
+        map_score = self.calculate_map()
         recall_score = self.calculate_recall()
         precision_at_10 = self.calculate_precision_at_k(k=10)
         mrr_score = self.calculate_mrr()
-
-        print(f"MAP: {map_score}")
-        print(f"Recall: {recall_score}")
-        print(f"Precision@10: {precision_at_10}")
-        print(f"MRR: {mrr_score}")
-
-        sorted_results = self.sort_results()
-        print("\nSorted Results (by MAP):")
-        print(sorted_results)
-
+        return {
+            "map_score": map_score,
+            "recall_score": recall_score,
+            "precision_at_10": precision_at_10,
+            "mrr_score": mrr_score,
+            "sorted_results": self.sort_results()
+        }
 
 # Example usage:
-evaluation = Evaluation(antique_related_file, antique_ground_truth_file)
-evaluation.evaluate()

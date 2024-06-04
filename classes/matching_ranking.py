@@ -65,15 +65,5 @@ class MatchingRanking:
         # Open the file in append mode
         with open(antique_related_file, 'a') as f:
             for index, document in zip(related_doc_id, related_documents):
-                # f.write(str(index) + '\n')
                 f.write(f"{query_id}\t{index}\t{document}\n")
-                # f.write("-----------\n")
-
-        '''
-        with open(antique_related_file, 'a') as f:
-            for index, document in zip(related_doc_id, related_documents):
-                # f.write(str(index) + '\n')
-                f.write(document)
-                # f.write("-----------\n")
-        '''
         print(f"Related document indices saved to {antique_related_file}.")

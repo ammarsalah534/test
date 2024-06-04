@@ -3,8 +3,9 @@ from pydantic import BaseModel
 import random
 from scipy.sparse import csr_matrix
 
+from classes.evaluation import Evaluation
 from classes.query_processing import QueryProcessing
-from classes.utils import antique_output_file, wikir_output_file
+from classes.utils import antique_output_file, wikir_output_file, antique_related_file, antique_ground_truth_file
 from matching_ranking import MatchingRanking
 import pickle
 
@@ -51,8 +52,14 @@ def greet(datasetName: str, query: str):
 
     matcher.save_results(query_id, related_doc_id, related_documents)
 
+
+
+    evaluation = Evaluation(antique_related_file, antique_ground_truth_file)
+    evaluations = evaluation.evaluate()
+
     response = {
-        "related_documents": related_documents  # Return the related documents
+        "related_documents": related_documents,
+        "evaluations": evaluations,
     }
 
     return response
