@@ -1,3 +1,6 @@
+import random
+import uuid
+
 from classes.utils import query_output_file, query_tfidf_file
 from text_processing import TextProcessing
 from representation_data import DataRepresentation  # Import DataRepresentation
@@ -6,6 +9,10 @@ import numpy as np
 
 
 class QueryProcessing:
+
+    def generate_query_id(self):
+        return str(random.randint(1111111, 9999999))
+
     def process_query(self, user_query):
         # Processes a user query using the TextProcessing class and generates a TF-IDF vector.
         # Args:
@@ -14,10 +21,10 @@ class QueryProcessing:
         # dataset_name (str, optional): The name of the dataset to use for vectorization. Defaults to 'antique'.
         # Returns:
         # tuple: A tuple containing the path to the output file and the TF-IDF vector of the query.
-
+        user_query = self.generate_query_id() + "\t" + user_query
         processor = TextProcessing()
         df = processor.process_text(user_query)
-        df.to_csv(query_output_file, sep='\t', index=False)
+        df['tokens'].to_csv(query_output_file, sep='\\', index=False, header=False)
 
         # Create DataRepresentation object for the processed query
         data_rep = DataRepresentation(query_output_file)  # Use the output file as input

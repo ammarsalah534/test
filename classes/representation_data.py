@@ -56,7 +56,7 @@ class DataRepresentation:
             self.vsm, self.vocabulary = pickle.load(f)
 
 
-# data_rep = DataRepresentation(antique_output_file)  # Replace with the path to your cleaned file
-# data_rep.create_vsm()  # Calculate TF-IDF vectors
-# data_rep.save_results(antique_tfidf_file)
-# data_rep.load_results(antique_tfidf_file)
+data_rep = DataRepresentation(antique_output_file)  # Replace with the path to your cleaned file
+data_rep.create_vsm()  # Calculate TF-IDF vectors
+data_rep.save_results(antique_tfidf_file)
+data_rep.load_results(antique_tfidf_file)

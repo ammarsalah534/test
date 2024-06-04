@@ -243,5 +243,5 @@ class TextProcessing:
                     df.to_csv(outputFile, sep='\\', index=False, mode='a', header=False)
 
 
-processor = TextProcessing()
-processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')
+# processor = TextProcessing()
+# processor.process_text_file(antique_input_file, antique_output_file, processing_method='lemmatize')
