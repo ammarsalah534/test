@@ -45,7 +45,7 @@ class Evaluation:
         ground_truth_df.to_csv(ground_truth_file, sep='\t', index=False, header=False)
         print(f"Ground truth file created: {ground_truth_file}")
 
-    def calculate_map(self):
+    def calculate_map1(self):
         """Calculates the Mean Average Precision (MAP)."""
         query_results = defaultdict(list)
         for _, row in self.related_output.iterrows():
@@ -65,6 +65,27 @@ class Evaluation:
 
         return np.mean(map_scores)
 
+    def calculate_map(self):
+        """Calculates the Mean Average Precision (MAP)."""
+        query_results = defaultdict(list)
+        for _, row in self.related_output.iterrows():
+            query_results[row['query_id']].append(row['doc_id'])
+
+        map_scores = []
+        for query_id, relevant_docs in self.ground_truth.groupby('query_id')['doc_id'].apply(list).items():
+            if query_id in query_results:
+                docs = query_results[query_id]
+                precisions = []
+                num_relevant = 0
+                for i, doc_id in enumerate(docs):
+                    if doc_id in relevant_docs:
+                        num_relevant += 1
+                        precisions.append(num_relevant / (i + 1))
+                if precisions:
+                    ap = sum(precisions) / len(relevant_docs)
+                    map_scores.append(ap)
+
+        return np.mean(map_scores) if map_scores else np.nan
     def calculate_recall(self):
         """Calculates the Recall."""
         all_relevant_docs = set(self.ground_truth['doc_id'].tolist())

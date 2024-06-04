@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import random
 from scipy.sparse import csr_matrix
 
+from classes.query_processing import QueryProcessing
 from classes.utils import antique_output_file, wikir_output_file
 from matching_ranking import MatchingRanking
 import pickle
@@ -40,8 +41,14 @@ def greet(datasetName: str, query: str):
     doc_vectors = matcher.data_rep.vsm
     # Call the matching function {{ Cos }}
     related_doc_id, related_documents = matcher.match(query_vector, doc_vectors)
+
     query_id = preprocessed_query.split("\t", 1)[0]
+
+    process = QueryProcessing()
+    query_vector = process.process_query(query_id, query)
+
     # Save the results to a file
+
     matcher.save_results(query_id, related_doc_id, related_documents)
 
     response = {

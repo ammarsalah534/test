@@ -13,7 +13,7 @@ class QueryProcessing:
     def generate_query_id(self):
         return str(random.randint(1111111, 9999999))
 
-    def process_query(self, user_query):
+    def process_query(self, query_id, user_query):
         # Processes a user query using the TextProcessing class and generates a TF-IDF vector.
         # Args:
         # user_query (str): The user's query string.
@@ -21,7 +21,7 @@ class QueryProcessing:
         # dataset_name (str, optional): The name of the dataset to use for vectorization. Defaults to 'antique'.
         # Returns:
         # tuple: A tuple containing the path to the output file and the TF-IDF vector of the query.
-        user_query = self.generate_query_id() + "\t" + user_query
+        user_query = query_id + "\t" + user_query
         processor = TextProcessing()
         df = processor.process_text(user_query)
         df['tokens'].to_csv(query_output_file, sep='\\', index=False, header=False)
@@ -52,7 +52,7 @@ class QueryProcessing:
 
 
 # Example usage:
-process = QueryProcessing()
-query_vector = process.process_query("small group like the is was are ## ?")
-print(f"Output file: {query_tfidf_file}")
-print(f"Query vector: {query_vector}")
+# process = QueryProcessing()
+# query_vector = process.process_query("small group like the is was are ## ?")
+# print(f"Output file: {query_tfidf_file}")
+# print(f"Query vector: {query_vector}")
