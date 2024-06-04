@@ -118,7 +118,7 @@ class Evaluation:
 
     def evaluate(self):
         """Evaluates the search results and prints the metrics."""
-        map_score = self.calculate_map()
+        map_score = self.calculate_map1()
         recall_score = self.calculate_recall()
         precision_at_10 = self.calculate_precision_at_k(k=10)
         mrr_score = self.calculate_mrr()
